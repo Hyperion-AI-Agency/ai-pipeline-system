@@ -62,12 +62,14 @@ sentry: Sentry {
   icon: https://cdn.simpleicons.org/sentry
 }
 
-trigger -> api
-api -> queue: Enqueue
-queue -> workers.w1
-queue -> workers.w2
-queue -> workers.more
-workers.w1 -> data.db
-workers.w2 -> data.db
-workers.more -> data.s3
-workers -> sentry: Errors
+trigger -> api: "1. Trigger job"
+api -> queue: "2. Enqueue"
+queue -> workers.w1: "3a. Dequeue"
+queue -> workers.w2: "3b. Dequeue"
+queue -> workers.more: "3c. Dequeue"
+workers.w1 -> data.db: "4a. Persist result"
+workers.w2 -> data.db: "4b. Persist result"
+workers.more -> data.s3: "4c. Store artifact"
+workers -> sentry: "5. Errors + perf" {
+  style.stroke-dash: 3
+}
