@@ -87,7 +87,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "@types/lodash": "^4.17.20",
-    "@types/node": "^20.0.0",
+    "@types/node": "^25.6.0",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.3.4",
