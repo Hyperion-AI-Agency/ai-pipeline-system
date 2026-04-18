@@ -12,17 +12,9 @@ classes: {
   }
 }
 
-triggers: Triggers {
-  style.bold: true
-
-  webhook: Webhook {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
-  }
-  cron: Cron {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/clock.svg
-  }
+trigger: Webhook + Cron {
+  class: card
+  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
 }
 
 api: FastAPI Gateway {
@@ -38,19 +30,15 @@ queue: "Redis Queue + DLQ" {
 workers: "Worker Pool (19+ tools)" {
   style.bold: true
 
-  w1: YouTube Worker {
-    class: card
-    icon: https://cdn.simpleicons.org/youtube
-  }
-  w2: Claude Worker {
+  w1: Claude Worker {
     class: card
     icon: https://cdn.simpleicons.org/anthropic
   }
-  w3: Video Worker {
+  w2: YouTube Worker {
     class: card
-    icon: https://cdn.simpleicons.org/ffmpeg
+    icon: https://cdn.simpleicons.org/youtube
   }
-  more: "12+ more..." {
+  more: "17+ more workers" {
     class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/layers.svg
   }
@@ -69,27 +57,17 @@ data: "Data Layer" {
   }
 }
 
-observability: "Observability" {
-  style.bold: true
-
-  sentry: Sentry {
-    class: card
-    icon: https://cdn.simpleicons.org/sentry
-  }
-  flower: Flower Dashboard {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/activity.svg
-  }
+sentry: Sentry {
+  class: card
+  icon: https://cdn.simpleicons.org/sentry
 }
 
-triggers.webhook -> api
-triggers.cron -> queue
+trigger -> api
 api -> queue: Enqueue
 queue -> workers.w1
 queue -> workers.w2
-queue -> workers.w3
+queue -> workers.more
 workers.w1 -> data.db
 workers.w2 -> data.db
-workers.w3 -> data.s3
-workers -> observability.sentry: Errors
-queue -> observability.flower: Queue health
+workers.more -> data.s3
+workers -> sentry: Errors

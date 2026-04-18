@@ -4,7 +4,7 @@
 shape: sequence_diagram
 
 trigger: Trigger {
-  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
+  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
 }
 api: FastAPI {
   icon: https://cdn.simpleicons.org/fastapi
@@ -13,9 +13,6 @@ queue: Redis Queue {
   icon: https://cdn.simpleicons.org/redis
 }
 worker: Worker {
-  icon: https://cdn.simpleicons.org/celery
-}
-claude: Claude API {
   icon: https://cdn.simpleicons.org/anthropic
 }
 db: Postgres {
@@ -23,16 +20,15 @@ db: Postgres {
 }
 
 trigger -> api: "1. POST /jobs"
-api -> db: "2. Persist job (queued)"
+api -> db: "2. Persist (queued)"
 api -> queue: "3. Enqueue"
 api -> trigger: "4. 202 + job_id" {
   style.stroke: "#059669"
 }
 queue -> worker: "5. Dequeue"
-worker -> claude: "6. LLM call"
-claude -> worker: "7. Response"
-worker -> db: "8. Update (done)" {
+worker -> worker: "6. Run task"
+worker -> db: "7. Update (done)" {
   style.stroke: "#059669"
   style.bold: true
 }
-worker -> trigger: "9. Webhook: done"
+worker -> trigger: "8. Webhook: done"
