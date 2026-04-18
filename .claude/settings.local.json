@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(terraform *)",
+      "Bash(ansible-playbook *)",
+      "Bash(npm *)",
+      "Bash(docker *)"
+    ]
+  }
+}
