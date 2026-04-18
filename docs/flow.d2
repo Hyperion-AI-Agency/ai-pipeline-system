@@ -1,66 +1,26 @@
-# Async Python Pipelines - Sequence Diagram
-# Render: d2 --theme 200 --layout dagre docs/flow.d2 docs/flow.svg
-
-title: Async Python Pipelines - Job Lifecycle {
-  near: top-center
-  shape: text
-  style.font-size: 28
-  style.bold: true
-}
+# AI Pipeline System - Job Lifecycle
+# Render: d2 --theme 303 --sketch --pad 120 --scale 1.5 --layout dagre
 
 shape: sequence_diagram
 
 trigger: Trigger
 api: FastAPI
-db: Postgres
 queue: Redis Queue
-worker: Celery Worker
+worker: Worker
 claude: Claude API
-sentry: Sentry
-dlq: DLQ
-s3: S3
-notify: Notifier
+db: Postgres
 
-trigger -> api: "1. POST /jobs (new pipeline job)"
-api -> db: "2. INSERT job row (status=queued)"
-api -> queue: "3. Enqueue job_id"
-api -> trigger: "4. 202 Accepted + job_id" {
+trigger -> api: "1. POST /jobs"
+api -> db: "2. Persist job (queued)"
+api -> queue: "3. Enqueue"
+api -> trigger: "4. 202 + job_id" {
   style.stroke: "#059669"
 }
-
-queue -> worker: "5. Dequeue job_id"
-worker -> db: "6. UPDATE status=running"
-worker -> worker: "7. Structured log: start"
-worker -> claude: "8. Prompt + inputs"
-claude -> worker: "9. Structured JSON response"
-
-# Happy path
-worker -> s3: "10a. Store artifact" {
-  style.stroke: "#059669"
-}
-worker -> db: "11a. UPDATE status=done + result" {
-  style.stroke: "#059669"
-}
-worker -> notify: "12a. Webhook callback" {
+queue -> worker: "5. Dequeue"
+worker -> claude: "6. LLM call"
+claude -> worker: "7. Response"
+worker -> db: "8. Update (done) + result" {
   style.stroke: "#059669"
   style.bold: true
 }
-
-# Transient error path
-worker -> worker: "10b. Catch retryable error"
-worker -> sentry: "11b. Log error with context" {
-  style.stroke-dash: 3
-}
-worker -> queue: "12b. Requeue with backoff\n(retry 1 of 3)" {
-  style.stroke-dash: 3
-  style.stroke: "#d97706"
-}
-
-# Exhausted retries -> DLQ
-worker -> dlq: "13c. Move to DLQ (retries exhausted)" {
-  style.stroke: "#dc2626"
-  style.bold: true
-}
-worker -> db: "14c. UPDATE status=failed"
-worker -> sentry: "15c. Critical alert"
-worker -> notify: "16c. Webhook: failure"
+worker -> trigger: "9. Webhook: done"
