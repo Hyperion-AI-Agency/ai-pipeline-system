@@ -32,6 +32,10 @@ Every pipeline tool runs as its own isolated Celery worker. A video render job f
 
 ## Data Flow
 
+![Job Lifecycle](docs/flow.svg)
+
+Source: [`docs/flow.d2`](docs/flow.d2)
+
 ### Happy path
 
 1. Trigger fires (cron, webhook, or manual)
