@@ -52,14 +52,14 @@ data: "Data Layer" {
   }
 }
 
-external: "External APIs" {
+observability: "Observability" {
   style.bold: true
 
-  claude: Anthropic Claude {
-    icon: https://cdn.simpleicons.org/anthropic
+  sentry: Sentry {
+    icon: https://cdn.simpleicons.org/sentry
   }
-  youtube: YouTube Data API {
-    icon: https://cdn.simpleicons.org/youtube
+  flower: Flower Dashboard {
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/activity.svg
   }
 }
 
@@ -69,8 +69,8 @@ api -> queue: Enqueue
 queue -> workers.w1
 queue -> workers.w2
 queue -> workers.w3
-workers.w1 -> external.youtube
-workers.w2 -> external.claude
 workers.w1 -> data.db
 workers.w2 -> data.db
 workers.w3 -> data.s3
+workers -> observability.sentry: "Errors"
+queue -> observability.flower: "Queue health"
