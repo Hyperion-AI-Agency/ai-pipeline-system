@@ -1,0 +1,25 @@
+# Traefik file-provider routing for local development.
+# Apps run on the host; Traefik proxies to them via host.docker.internal.
+
+http:
+  routers:
+    nextjs:
+      rule: "Host(`localhost`)"
+      service: nextjs
+      entryPoints:
+        - web
+    fastapi:
+      rule: "Host(`api.localhost`)"
+      service: fastapi
+      entryPoints:
+        - web
+
+  services:
+    nextjs:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:3000"
+    fastapi:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:8000"

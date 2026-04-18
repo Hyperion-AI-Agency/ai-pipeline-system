@@ -1,0 +1,158 @@
+/* Custom styling overrides for Payload CMS admin pages */
+/* Maps Payload's theme variables to the App design tokens */
+
+/* ── Fonts ────────────────────────────────────────── */
+:root {
+  --font-body:
+    "THICCCBOI", -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica,
+    sans-serif;
+  --font-mono: "SF Mono", Menlo, monospace;
+}
+
+html,
+body {
+  font-size: 16px !important;
+}
+
+/* ── Light Theme ──────────────────────────────────── */
+:root,
+html[data-theme="light"] {
+  /* Backgrounds & surfaces */
+  --theme-bg: #ffffff;
+  --theme-elevation-0: #ffffff;
+  --theme-elevation-50: #fafaf8;
+  --theme-elevation-100: #f5f5f0;
+  --theme-elevation-150: #f0f0eb;
+  --theme-elevation-200: #eeeeee;
+  --theme-elevation-250: #e0e0db;
+  --theme-elevation-300: #d1d1cc;
+  --theme-elevation-350: #c0c0bb;
+  --theme-elevation-400: #a8a8a3;
+  --theme-elevation-450: #8f8f8a;
+  --theme-elevation-500: #6b7280;
+  --theme-elevation-550: #5a5f6b;
+  --theme-elevation-600: #4a4f5a;
+  --theme-elevation-650: #3a3f4a;
+  --theme-elevation-700: #2a2f3a;
+  --theme-elevation-750: #1e2430;
+  --theme-elevation-800: #162030;
+  --theme-elevation-850: #0f1a2a;
+  --theme-elevation-900: #0b1f3a;
+  --theme-elevation-950: #071428;
+  --theme-elevation-1000: #030d1e;
+
+  /* Text */
+  --theme-text: #0b1f3a;
+
+  /* Input fields */
+  --theme-input-bg: #f5f5f0;
+
+  /* Borders */
+  --theme-border-color: #eeeeee;
+
+  /* Radius */
+  --style-radius-s: 6px;
+  --style-radius-m: 8px;
+  --style-radius-l: 10px;
+
+  /* Primary accent */
+  --theme-color-blue-500: #1e4a70;
+
+  /* Success */
+  --theme-success-500: #059669;
+
+  /* Error (match app destructive) */
+  --theme-error-500: #dc2626;
+}
+
+/* ── Dark Theme ───────────────────────────────────── */
+html[data-theme="dark"] {
+  /* Backgrounds & surfaces — inverted for dark */
+  --theme-bg: #111111;
+  --theme-elevation-0: #111111;
+  --theme-elevation-50: #161616;
+  --theme-elevation-100: #1c1c1e;
+  --theme-elevation-150: #222224;
+  --theme-elevation-200: #2d2d2d;
+  --theme-elevation-250: #363636;
+  --theme-elevation-300: #3f3f3f;
+  --theme-elevation-350: #4a4a4a;
+  --theme-elevation-400: #5a5a5a;
+  --theme-elevation-450: #6b6b6b;
+  --theme-elevation-500: #7c7c7c;
+  --theme-elevation-550: #8d8d8d;
+  --theme-elevation-600: #9ca3af;
+  --theme-elevation-650: #adb3bd;
+  --theme-elevation-700: #bec4cd;
+  --theme-elevation-750: #d0d5dc;
+  --theme-elevation-800: #e0e4e9;
+  --theme-elevation-850: #eaedf1;
+  --theme-elevation-900: #f5f5f0;
+  --theme-elevation-950: #fafaf8;
+  --theme-elevation-1000: #ffffff;
+
+  /* Text */
+  --theme-text: #f5f5f0;
+
+  /* Input fields */
+  --theme-input-bg: #1c1c1e;
+
+  /* Borders */
+  --theme-border-color: #2d2d2d;
+
+  /* Primary accent */
+  --theme-color-blue-500: #34d399;
+
+  /* Success (dark mode teal) */
+  --theme-success-500: #34d399;
+
+  /* Error (dark mode red) */
+  --theme-error-500: #ef4444;
+}
+
+/* ── Nav & Sidebar ───────────────────────────────── */
+.nav-group__label {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Active nav item highlight */
+[class*="nav--"] a[class*="active"] {
+  color: var(--theme-color-blue-500);
+}
+
+/* ── Buttons ─────────────────────────────────────── */
+.btn[class*="primary"],
+button[class*="primary"] {
+  border-radius: var(--style-radius-m);
+}
+
+/* ── Cards & Surfaces ────────────────────────────── */
+[class*="card"],
+.collapsible-header {
+  border-radius: var(--style-radius-m);
+}
+
+/* ── Table Rows ──────────────────────────────────── */
+.row-1:hover,
+.table [class*="row"]:hover {
+  background-color: var(--theme-elevation-50);
+}
+
+/* ── Inputs ──────────────────────────────────────── */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select,
+.react-select__control {
+  border-radius: var(--style-radius-s) !important;
+}
+
+/* Checkbox accent */
+input[type="checkbox"] {
+  accent-color: var(--theme-color-blue-500);
+}

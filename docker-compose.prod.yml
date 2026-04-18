@@ -1,0 +1,102 @@
+# Production docker-compose
+#
+# All configuration is passed via environment variables.
+# Required vars are ${VAR} (will error if missing).
+# Optional vars are ${VAR:-default} (have sensible defaults).
+
+x-app-env: &app-env
+  NODE_ENV: production
+  APP_DATABASE_URL: ${APP_DATABASE_URL}
+  APP_BETTER_AUTH_SECRET: ${APP_BETTER_AUTH_SECRET}
+  APP_PAYLOAD_SECRET: ${APP_PAYLOAD_SECRET}
+  NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+  APP_BACKEND_API_URL: ${APP_BACKEND_API_URL:-http://api:8000}
+  NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+
+x-api-env: &api-env
+  API_ENVIRONMENT: ${API_ENVIRONMENT:-production}
+  API_SECRET_KEY: ${API_SECRET_KEY}
+  API_SERVER_HOST: "0.0.0.0"
+  API_SERVER_PORT: "8000"
+  API_SWAGGER_HIDE: ${API_SWAGGER_HIDE:-true}
+  API_DATABASE_URL: ${API_DATABASE_URL}
+  API_OAUTH_PROVIDER_BASE_URL: ${API_OAUTH_PROVIDER_BASE_URL:-http://app:3000}
+  API_OAUTH_ISSUER_URL: ${NEXT_PUBLIC_APP_URL}
+  API_OAUTH_AUDIENCE: ${NEXT_PUBLIC_APP_URL}
+  API_SENTRY_DSN: ${API_SENTRY_DSN:-}
+
+services:
+
+  traefik:
+    image: traefik:3.6
+    command:
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_letsencrypt:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.middlewares=dashboard-auth"
+      - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_AUTH}"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    environment:
+      <<: *api-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  app:
+    build:
+      context: .
+      dockerfile: apps/nextjs/Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+    environment:
+      <<: *app-env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.app.loadbalancer.server.port=3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  traefik_letsencrypt:

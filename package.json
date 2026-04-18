@@ -1,0 +1,72 @@
+{
+  "name": "saas-ai-template",
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo run lint",
+    "test": "turbo test",
+    "analyze": "turbo analyze",
+    "translate": "turbo translate",
+    "bump-deps": "npx npm-check-updates --deep -u -x react-day-picker",
+    "bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system",
+    "db:generate": "pnpm --filter nextjs db:generate && pnpm --filter fastapi db:generate",
+    "db:generate:app": "pnpm --filter nextjs db:generate",
+    "db:generate:api": "pnpm --filter fastapi db:generate",
+    "db:migrate": "pnpm --filter nextjs db:migrate && pnpm --filter fastapi db:migrate",
+    "db:migrate:app": "pnpm --filter nextjs db:migrate",
+    "db:migrate:api": "pnpm --filter fastapi db:migrate",
+    "db:seed-admin": "pnpm --filter nextjs db:seed-admin",
+    "generate-api": "pnpm --filter @packages/api-client generate",
+    "clean": "git clean -xdf node_modules",
+    "prepare": "husky",
+    "semantic-release": "semantic-release",
+    "semantic-release:dry-run": "semantic-release --dry-run",
+    "test:e2e": "pnpm --filter nextjs test:e2e",
+    "test:e2e:ui": "pnpm --filter nextjs test:e2e:ui",
+    "test:e2e:debug": "pnpm --filter nextjs test:e2e:debug",
+    "test:e2e:install": "pnpm --filter nextjs test:e2e:install"
+  },
+  "devDependencies": {
+    "@auto-it/first-time-contributor": "^11.3.6",
+    "@biomejs/biome": "2.3.7",
+    "@tooling/prettier-config": "workspace:*",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.2",
+    "@turbo/gen": "^2.6.1",
+    "@types/node": "^20.0.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7",
+    "prettier": "^3.6.2",
+    "semantic-release": "^25.0.2",
+    "turbo": "^2.6.1",
+    "typescript": "catalog:",
+    "ultracite": "^6.3.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "commander": "^14.0.2"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "next": "15",
+        "zod": "4",
+        "dotenv": "17",
+        "react": "19",
+        "react-dom": "19"
+      }
+    }
+  }
+}

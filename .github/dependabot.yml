@@ -1,0 +1,145 @@
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain dependencies for npm (root)
+  - package-ecosystem: "npm"
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain dependencies for npm (storybook)
+  - package-ecosystem: "npm"
+    directory: "/apps/storybook"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain dependencies for npm (keycloak-theme)
+  - package-ecosystem: "npm"
+    directory: "/apps/keycloak-theme"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain dependencies for npm (email)
+  - package-ecosystem: "npm"
+    directory: "/apps/email"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain dependencies for pip (fastapi)
+  - package-ecosystem: "pip"
+    directory: "/apps/api"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain dependencies for pip (mkdocs)
+  - package-ecosystem: "pip"
+    directory: "/apps/mkdocs"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain Docker base images (fastapi)
+  - package-ecosystem: "docker"
+    directory: "/apps/api"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Maintain Docker base images (nextjs - uses root context)
+  - package-ecosystem: "docker"
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(deps):"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
