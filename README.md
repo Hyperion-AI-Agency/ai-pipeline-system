@@ -92,7 +92,7 @@ Software dev from Lithuania, worked at IBM, living in Vietnam. Building enterpri
 
 ---
 
-### Book a call
+### Request a project
 
 Free 30-minute scoping session for teams running many async Python pipelines.
 
