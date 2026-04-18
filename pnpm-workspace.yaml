@@ -227,7 +227,7 @@ catalogs:
 
     # Authentication ecosystem
   auth:
-    "oidc-spa": "7.1.10"
+    "oidc-spa": "10.2.1"
     "@nestjs/passport": "^10.0.3"
     "passport": "^0.7.0"
     "passport-jwt": "^4.0.1"
