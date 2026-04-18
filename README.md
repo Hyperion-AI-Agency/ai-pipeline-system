@@ -93,24 +93,13 @@ Software dev from Lithuania, worked at IBM, living in Vietnam. Building enterpri
 
 ---
 
-<table>
-<tr>
-<td width="180" valign="top">
-
 ### Book a call
 
 Free 30-minute scoping session for teams running many async Python pipelines.
 
-</td>
-<td valign="top">
-
-**[cal.com/vitalijus-alsauskas/project-request](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true)**
+**[cal.com/vitalijus-alsauskas/project-request →](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true)**
 
 Or reach out via [LinkedIn](https://www.linkedin.com/in/vitalijus-hyperion/).
-
-</td>
-</tr>
-</table>
 
 ---
 
