@@ -12,7 +12,7 @@
 
 ---
 
-![Architecture](docs/architecture.svg)
+<img src="docs/architecture.svg" width="100%" alt="Architecture" />
 
 </div>
 
@@ -73,8 +73,8 @@ pnpm dev
 
 <table>
 <tr>
-<td width="180" valign="top">
-<img src="https://hyperionai.dev/founder.png" width="160" alt="Vitalijus Alsauskas" />
+<td width="240" valign="top">
+<img src="https://hyperionai.dev/founder.png" width="220" alt="Vitalijus Alsauskas" />
 </td>
 <td valign="top">
 
