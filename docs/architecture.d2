@@ -1,35 +1,55 @@
 # AI Pipeline System - Architecture
-# Render: d2 --theme 303 --sketch --pad 120 --scale 1.5 --layout elk
+# Render: d2 --theme 0 --pad 120 --scale 1.5 --layout elk docs/architecture.d2 docs/architecture.svg
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
 
 direction: right
 grid-columns: 2
-grid-gap: 80
+grid-gap: 60
 
 classes: {
   card: {
     width: 160
     height: 160
+    style.font-size: 14
+  }
+  zone: {
+    style.fill: "#f8fafc"
+    style.stroke: "#cbd5e1"
+    style.stroke-width: 2
+    style.border-radius: 12
+    style.shadow: true
+    style.font-size: 13
+    style.bold: true
   }
 }
 
-trigger: Webhook + Cron {
-  class: card
-  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+trigger_zone: "Trigger" {
+  class: zone
+  style.fill: "#f0f9ff"
+
+  trigger: Webhook + Cron {
+    class: card
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+  }
+  api: FastAPI Gateway {
+    class: card
+    icon: https://cdn.simpleicons.org/fastapi
+  }
 }
 
-api: FastAPI Gateway {
-  class: card
-  icon: https://cdn.simpleicons.org/fastapi
-}
+backend_zone: "Workers (19+ tools)" {
+  class: zone
+  style.fill: "#eef2ff"
 
-queue: "Redis Queue + DLQ" {
-  class: card
-  icon: https://cdn.simpleicons.org/redis
-}
-
-workers: "Worker Pool (19+ tools)" {
-  style.bold: true
-
+  queue: Redis Queue + DLQ {
+    class: card
+    icon: https://cdn.simpleicons.org/redis
+  }
   w1: Claude Worker {
     class: card
     icon: https://cdn.simpleicons.org/anthropic
@@ -38,14 +58,15 @@ workers: "Worker Pool (19+ tools)" {
     class: card
     icon: https://cdn.simpleicons.org/youtube
   }
-  more: "17+ more workers" {
+  more: 17+ more workers {
     class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/layers.svg
   }
 }
 
-data: "Data Layer" {
-  style.bold: true
+data_zone: "Data" {
+  class: zone
+  style.fill: "#ecfdf5"
 
   db: Postgres {
     class: card
@@ -57,19 +78,24 @@ data: "Data Layer" {
   }
 }
 
-sentry: Sentry {
-  class: card
-  icon: https://cdn.simpleicons.org/sentry
+external_zone: "Observability" {
+  class: zone
+  style.fill: "#fef3c7"
+
+  sentry: Sentry {
+    class: card
+    icon: https://cdn.simpleicons.org/sentry
+  }
 }
 
-trigger -> api: "1. Trigger job"
-api -> queue: "2. Enqueue"
-queue -> workers.w1: "3a. Dequeue"
-queue -> workers.w2: "3b. Dequeue"
-queue -> workers.more: "3c. Dequeue"
-workers.w1 -> data.db: "4a. Persist result"
-workers.w2 -> data.db: "4b. Persist result"
-workers.more -> data.s3: "4c. Store artifact"
-workers -> sentry: "5. Errors + perf" {
+trigger_zone.trigger -> trigger_zone.api: "1. Trigger job"
+trigger_zone.api -> backend_zone.queue: "2. Enqueue"
+backend_zone.queue -> backend_zone.w1: "3a. Dequeue"
+backend_zone.queue -> backend_zone.w2: "3b. Dequeue"
+backend_zone.queue -> backend_zone.more: "3c. Dequeue"
+backend_zone.w1 -> data_zone.db: "4a. Persist result"
+backend_zone.w2 -> data_zone.db: "4b. Persist result"
+backend_zone.more -> data_zone.s3: "4c. Store artifact"
+backend_zone -> external_zone.sentry: "5. Errors + perf" {
   style.stroke-dash: 3
 }

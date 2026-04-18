@@ -7,20 +7,25 @@
 ![License](https://img.shields.io/badge/license-MIT-3b82f6)
 ![Built by Hyperion AI](https://img.shields.io/badge/built_by-Hyperion_AI-0f172a)
 ![Stack](https://img.shields.io/badge/stack-FastAPI_·_Celery_·_Claude-64748b)
-
-[View Design Doc (PDF)](DESIGN_DOC.pdf) · [Architecture](docs/architecture.md)
+![GitHub Repo stars](https://img.shields.io/github/stars/Hyperion-AI-Agency/ai-pipeline-system?style=flat&color=fbbf24)
+![Last Commit](https://img.shields.io/github/last-commit/Hyperion-AI-Agency/ai-pipeline-system?color=3b82f6)
 
 ---
 
 <img src="docs/architecture.svg" width="100%" alt="Architecture" />
 
+[Design Doc](DESIGN_DOC.pdf) · [Architecture](docs/architecture.md) · [Quickstart](#quick-start) · [Book a call](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true)
+
 </div>
+
+> [!NOTE]
+> This is a reference architecture shared as a starting point, not a production service. Fork it, adapt the workers to your tools, ship faster.
 
 ## What this is
 
-A production pattern for teams running many async Python pipelines in parallel. Demonstrates the shape that holds up at 19+ interlocked tools: FastAPI gateway, Celery + Redis orchestration, isolated workers per pipeline tool, dedicated DLQ, structured logging with request IDs propagated across every hop.
+A full-stack async Python system for teams running many data pipelines in parallel. FastAPI gateway in front, Celery + Redis orchestration, one isolated worker class per pipeline tool, and a dedicated DLQ so exhausted-retry jobs are never silently lost.
 
-Most async Python pipelines work fine at 2-3 tools and fall over at 10+. Silent retry failures, scattered logs, one bad worker starving the rest, 3am debugging sessions that take hours. This reference shows the pattern that scales.
+Most async Python pipelines work fine at 2-3 tools and fall over at 10+. Silent retry failures, scattered logs, one bad worker starving the rest, 3am debugging sessions that take hours. This system is built around the shape that holds at 19+ interlocked tools.
 
 ## Why this exists
 
@@ -35,7 +40,6 @@ Most async Python pipelines work fine at 2-3 tools and fall over at 10+. Silent 
 **[Design Doc (PDF)](DESIGN_DOC.pdf)** — Branded system design with diagrams, tool choices, phases, and risks.
 
 **[Architecture](docs/architecture.md)** — Layered view with component responsibilities and design decisions.
-
 
 **[Flow Diagram](docs/flow.svg)** — Sequence diagram of job lifecycle (happy + retry + DLQ paths).
 
@@ -59,6 +63,9 @@ make dev
 ```
 
 Runs install + docker + migrations + dev server in one command. See `make help` for the full list.
+
+> [!TIP]
+> Prefer not to run this yourself? [Book a 30-minute scoping call](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true) and I'll map this to your pipeline fleet.
 
 ## Who this is for
 
@@ -93,7 +100,7 @@ Software dev from Lithuania, worked at IBM, living in Vietnam. Building enterpri
 
 ### Request a project
 
-Free 30-minute scoping session for teams running many async Python pipelines.
+Send me your project brief. I reply within 24 hours.
 
 **[cal.com/vitalijus-alsauskas/project-request →](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true)**
 
