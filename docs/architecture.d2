@@ -4,54 +4,60 @@
 direction: down
 
 triggers: Triggers {
-  style.font-size: 18
   style.bold: true
 
-  webhook: Webhook
-  cron: Cron
+  webhook: Webhook {
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
+  }
+  cron: Cron {
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/clock.svg
+  }
 }
 
 api: FastAPI Gateway {
-  style.font-size: 18
+  icon: https://cdn.simpleicons.org/fastapi
 }
 
 queue: "Redis Queue + DLQ" {
-  style.font-size: 18
-  style.bold: true
-  shape: queue
+  icon: https://cdn.simpleicons.org/redis
 }
 
 workers: "Worker Pool (19+ tools)" {
-  style.font-size: 18
   style.bold: true
 
-  w1: YouTube Worker
-  w2: Claude Worker
-  w3: Video Worker
-  more: "12+ more..."
+  w1: YouTube Worker {
+    icon: https://cdn.simpleicons.org/youtube
+  }
+  w2: Claude Worker {
+    icon: https://cdn.simpleicons.org/anthropic
+  }
+  w3: Video Worker {
+    icon: https://cdn.simpleicons.org/ffmpeg
+  }
+  more: "12+ more..." {
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/layers.svg
+  }
 }
 
 data: "Data Layer" {
-  style.font-size: 18
   style.bold: true
 
   db: Postgres {
-    shape: cylinder
+    icon: https://cdn.simpleicons.org/postgresql
   }
   s3: S3 Artifacts {
-    shape: cylinder
+    icon: https://icons.terrastruct.com/aws%2FStorage%2FAmazon-Simple-Storage-Service-S3.svg
   }
 }
 
 external: "External APIs" {
-  style.font-size: 18
   style.bold: true
 
   claude: Anthropic Claude {
-    shape: cloud
+    icon: https://cdn.simpleicons.org/anthropic
   }
   youtube: YouTube Data API {
-    shape: cloud
+    icon: https://cdn.simpleicons.org/youtube
   }
 }
 
