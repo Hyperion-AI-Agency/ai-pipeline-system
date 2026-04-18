@@ -5,7 +5,7 @@
 ### Async Python data pipelines at scale. FastAPI gateway, Celery orchestration, isolated workers, dedicated DLQ, structured logging with request IDs.
 
 ![License](https://img.shields.io/badge/license-MIT-3b82f6)
-![Built by HyperionAI](https://img.shields.io/badge/built_by-HyperionAI-0f172a)
+![Built by Hyperion AI](https://img.shields.io/badge/built_by-Hyperion_AI-0f172a)
 ![Stack](https://img.shields.io/badge/stack-FastAPI_·_Celery_·_Claude-64748b)
 
 [View Design Doc (PDF)](DESIGN_DOC.pdf) · [Architecture](docs/architecture.md) · [Implementation Plan](IMPLEMENTATION_PLAN.md)
@@ -72,35 +72,45 @@ pnpm dev
 
 ---
 
-<div align="center">
-
-## About the author
-
-<img src="https://hyperionai.dev/founder.png" width="120" style="border-radius:50%" alt="Vitalijus Alsauskas" />
+<table>
+<tr>
+<td width="180" valign="top">
+<img src="https://hyperionai.dev/founder.png" width="160" alt="Vitalijus Alsauskas" />
+</td>
+<td valign="top">
 
 ### Vitalijus Alsauskas
 
-Founder, HyperionAI
+Software and AI Engineer
+
+Software dev from Lithuania, worked at IBM, living in Vietnam. Building enterprise-level tools for startups and companies.
 
 [LinkedIn](https://www.linkedin.com/in/vitalijus-hyperion/) · [GitHub](https://github.com/Vitals9367) · [hyperionai.dev](https://hyperionai.dev)
 
-</div>
-
-4 years at IBM on Fortune 500 systems. Now running FastAPI + Claude pipelines on Bulk Video Pipeline (Lead Alliances client, async video ad production at scale) and Fit7D (FastAPI + Claude dialogue platform). Claude Code is my daily workflow.
+</td>
+</tr>
+</table>
 
 ---
 
-<div align="center">
+<table>
+<tr>
+<td width="180" valign="top">
 
-## Interested in building something like this?
+### Book a call
 
-I offer a free 30-minute scoping call for teams running many async Python pipelines.
+Free 30-minute scoping session for teams running many async Python pipelines.
 
-### [Book a call](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true)
+</td>
+<td valign="top">
 
-or reach out via [LinkedIn](https://www.linkedin.com/in/vitalijus-hyperion/)
+**[cal.com/vitalijus-alsauskas/project-request](https://cal.com/vitalijus-alsauskas/project-request?overlayCalendar=true)**
 
-</div>
+Or reach out via [LinkedIn](https://www.linkedin.com/in/vitalijus-hyperion/).
+
+</td>
+</tr>
+</table>
 
 ---
 
