@@ -5,15 +5,9 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  contents: read
-  pull-requests: read
-
 env:
   PYTHON_VERSION: "3.12"
   POETRY_VERSION: "2.2.1"
-  NODE_VERSION: "22"
-  PNPM_VERSION: "10.11.0"
 
 jobs:
   gitleaks:
@@ -35,32 +29,7 @@ jobs:
         run: pip install poetry==${{ env.POETRY_VERSION }}
 
       - name: Install dependencies
-        working-directory: apps/api
         run: poetry install
 
       - name: Run pytest
-        working-directory: apps/api
-        run: poetry run pytest
-
-  frontend-lint:
-    name: Frontend Lint & Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Type check
-        run: pnpm --filter web build
+        run: poetry run pytest --cov --cov-report=term
