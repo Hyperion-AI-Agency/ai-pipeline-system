@@ -1,0 +1,174 @@
+# Async Python Pipelines - System Architecture (Layered)
+# Render: d2 --theme 200 --layout elk docs/architecture.d2 docs/architecture.svg
+
+direction: down
+
+title: Async Python Pipelines at Scale - Architecture {
+  near: top-center
+  shape: text
+  style.font-size: 28
+  style.bold: true
+}
+
+# --- Layer 1: Triggers ---
+triggers: {
+  label: "Triggers & Sources"
+  style.bold: true
+  grid-columns: 3
+  grid-gap: 30
+
+  cron: "Scheduler\n(APScheduler / cron)"
+  webhook: "Webhook Ingress\n(FastAPI endpoints)"
+  manual: "Manual CLI\n(operator scripts)"
+}
+
+# --- Layer 2: API Gateway ---
+gateway: {
+  label: "API Gateway  -  FastAPI"
+  style.bold: true
+  grid-columns: 3
+  grid-gap: 30
+
+  api: "Public API\n(OpenAPI + Pydantic)"
+  auth: "Auth Middleware\n(API keys + JWT)"
+  audit: "Request Audit Log"
+}
+
+# --- Layer 3: Task Queue ---
+queue: {
+  label: "Task Queue  -  Celery + Redis"
+  style.bold: true
+  grid-columns: 3
+  grid-gap: 30
+
+  broker: "Redis Broker" {
+    shape: cylinder
+  }
+  dlq: "Dead Letter Queue\n(failed after retries)" {
+    shape: queue
+  }
+  scheduler: "Celery Beat\n(scheduled tasks)"
+}
+
+# --- Layer 4: Worker Pool (the 19+ tools) ---
+workers: {
+  label: "Worker Pool  -  Celery (19+ pipeline tools)"
+  style.bold: true
+  grid-columns: 4
+  grid-gap: 25
+
+  youtube: "YouTube Worker\n(Data API, metadata)"
+  transcribe: "Transcription Worker\n(Whisper / OpenAI)"
+  llm: "LLM Worker\n(Claude structured output)"
+  render: "Video Worker\n(ffmpeg pipelines)"
+  upload: "Upload Worker\n(YouTube, S3)"
+  thumb: "Thumbnail Worker"
+  stats: "Analytics Worker"
+  other: "12+ more..."
+}
+
+# --- Layer 5: Observability ---
+observability: {
+  label: "Observability"
+  style.bold: true
+  grid-columns: 3
+  grid-gap: 30
+
+  logs: "Structlog\n(JSON, request IDs)" {
+    shape: cylinder
+  }
+  sentry: "Sentry\n(errors + perf)" {
+    shape: cloud
+  }
+  flower: "Flower\n(Celery inspector)"
+}
+
+# --- Layer 6: Data ---
+data: {
+  label: "Data Layer"
+  style.bold: true
+  grid-columns: 3
+  grid-gap: 30
+
+  db: "Postgres\n(job state, metadata)" {
+    shape: cylinder
+  }
+  s3: "S3\n(video artifacts)" {
+    shape: cylinder
+  }
+  cache: "Redis Cache\n(dedup, short-lived)" {
+    shape: cylinder
+  }
+}
+
+# --- Layer 7: External APIs ---
+external: {
+  label: "External APIs"
+  style.bold: true
+  grid-columns: 4
+  grid-gap: 25
+
+  claude: "Anthropic Claude" {
+    shape: cloud
+  }
+  openai: "OpenAI\n(Whisper)" {
+    shape: cloud
+  }
+  youtube_api: "YouTube Data API" {
+    shape: cloud
+  }
+  webhooks: "Outbound webhooks" {
+    shape: cloud
+  }
+}
+
+# --- Connections ---
+
+triggers.cron -> queue.scheduler
+triggers.webhook -> gateway.api
+triggers.manual -> queue.broker
+
+gateway.api -> gateway.auth
+gateway.api -> gateway.audit
+gateway.api -> queue.broker: "Enqueue"
+queue.scheduler -> queue.broker
+
+queue.broker -> workers.youtube
+queue.broker -> workers.transcribe
+queue.broker -> workers.llm
+queue.broker -> workers.render
+queue.broker -> workers.upload
+queue.broker -> workers.thumb
+queue.broker -> workers.stats
+queue.broker -> workers.other
+
+# Worker -> external APIs (selective)
+workers.llm -> external.claude
+workers.transcribe -> external.openai
+workers.youtube -> external.youtube_api
+workers.upload -> external.youtube_api
+workers.upload -> external.webhooks
+
+# Worker -> data (selective examples)
+workers.llm -> data.db
+workers.render -> data.s3
+workers.youtube -> data.cache
+workers.other -> data.db
+
+# Failure path
+workers.llm -> queue.dlq: "After max retries" {
+  style.stroke-dash: 3
+  style.stroke: "#d97706"
+}
+workers.render -> queue.dlq: "After max retries" {
+  style.stroke-dash: 3
+  style.stroke: "#d97706"
+}
+
+# Observability (cross-cutting)
+workers.llm -> observability.logs
+workers.render -> observability.logs
+workers.llm -> observability.sentry: "Errors" {
+  style.stroke-dash: 3
+}
+queue.broker -> observability.flower
