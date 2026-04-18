@@ -55,11 +55,10 @@ Most async Python pipelines work fine at 2-3 tools and fall over at 10+. Silent 
 ## Quick Start
 
 ```bash
-pnpm install
-docker compose -f docker-compose.local.yml up -d
-cd apps/api && poetry install && poetry run alembic upgrade head && cd ../..
-pnpm dev
+make dev
 ```
+
+Runs install + docker + migrations + dev server in one command. See `make help` for the full list.
 
 ## Who this is for
 
