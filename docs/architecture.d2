@@ -5,22 +5,33 @@ direction: right
 grid-columns: 2
 grid-gap: 40
 
+classes: {
+  card: {
+    width: 220
+    height: 140
+  }
+}
+
 triggers: Triggers {
   style.bold: true
 
   webhook: Webhook {
+    class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
   }
   cron: Cron {
+    class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/clock.svg
   }
 }
 
 api: FastAPI Gateway {
+  class: card
   icon: https://cdn.simpleicons.org/fastapi
 }
 
 queue: "Redis Queue + DLQ" {
+  class: card
   icon: https://cdn.simpleicons.org/redis
 }
 
@@ -28,15 +39,19 @@ workers: "Worker Pool (19+ tools)" {
   style.bold: true
 
   w1: YouTube Worker {
+    class: card
     icon: https://cdn.simpleicons.org/youtube
   }
   w2: Claude Worker {
+    class: card
     icon: https://cdn.simpleicons.org/anthropic
   }
   w3: Video Worker {
+    class: card
     icon: https://cdn.simpleicons.org/ffmpeg
   }
   more: "12+ more..." {
+    class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/layers.svg
   }
 }
@@ -45,9 +60,11 @@ data: "Data Layer" {
   style.bold: true
 
   db: Postgres {
+    class: card
     icon: https://cdn.simpleicons.org/postgresql
   }
   s3: S3 Artifacts {
+    class: card
     icon: https://icons.terrastruct.com/aws%2FStorage%2FAmazon-Simple-Storage-Service-S3.svg
   }
 }
@@ -56,9 +73,11 @@ observability: "Observability" {
   style.bold: true
 
   sentry: Sentry {
+    class: card
     icon: https://cdn.simpleicons.org/sentry
   }
   flower: Flower Dashboard {
+    class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/activity.svg
   }
 }
@@ -72,5 +91,5 @@ queue -> workers.w3
 workers.w1 -> data.db
 workers.w2 -> data.db
 workers.w3 -> data.s3
-workers -> observability.sentry: "Errors"
-queue -> observability.flower: "Queue health"
+workers -> observability.sentry: Errors
+queue -> observability.flower: Queue health
