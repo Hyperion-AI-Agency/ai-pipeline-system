@@ -28,23 +28,16 @@ classes: {
   }
 }
 
-# Entry point - outside the system
+# Order controls grid position. app_zone at position 1 = top-center.
 trigger: Webhook + Cron {
   class: card
   icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
 }
 
 app_zone: "App" {
-  grid-columns: 2
-  grid-gap: 30
-
   api: FastAPI {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
-  }
-  queue: Redis + DLQ {
-    class: card
-    icon: https://cdn.simpleicons.org/redis
   }
 }
 
@@ -52,13 +45,13 @@ workers_zone: "Workers (19+ isolated)" {
   grid-columns: 3
   grid-gap: 30
 
-  w1: Claude Worker {
+  w1: LLM Worker {
     class: card
-    icon: https://cdn.simpleicons.org/anthropic
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/cog.svg
   }
-  w2: YouTube Worker {
+  w2: Video Worker {
     class: card
-    icon: https://cdn.simpleicons.org/youtube
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/cog.svg
   }
   more: 17+ more workers {
     class: card
@@ -67,12 +60,16 @@ workers_zone: "Workers (19+ isolated)" {
 }
 
 data_zone: "Data" {
-  grid-columns: 2
+  grid-columns: 3
   grid-gap: 30
 
   db: Postgres {
     class: card
     icon: https://cdn.simpleicons.org/postgresql
+  }
+  queue: Redis + DLQ {
+    class: card
+    icon: https://cdn.simpleicons.org/redis
   }
   s3: S3 Artifacts {
     class: card
@@ -87,10 +84,27 @@ observability_zone: "Observability" {
   }
 }
 
+integrations_zone: "3rd Party Integrations" {
+  grid-columns: 2
+  grid-gap: 30
+
+  claude: Claude API {
+    class: card
+    icon: https://cdn.simpleicons.org/anthropic
+  }
+  youtube: YouTube API {
+    class: card
+    icon: https://cdn.simpleicons.org/youtube
+  }
+}
+
 trigger -> app_zone.api: "1. Trigger job"
-app_zone.api -> app_zone.queue: "2. Enqueue"
-app_zone.queue -> workers_zone: "3. Dequeue per tool"
+app_zone.api -> data_zone.queue: "2. Enqueue"
+data_zone.queue -> workers_zone: "3. Dequeue per tool"
 workers_zone -> data_zone: "4. Persist + artifacts"
-workers_zone -> observability_zone: "5. Errors + perf" {
+workers_zone -> integrations_zone: "5. Call external APIs" {
+  style.stroke-dash: 3
+}
+workers_zone -> observability_zone: "6. Errors + perf" {
   style.stroke-dash: 3
 }
