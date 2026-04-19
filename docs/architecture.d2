@@ -102,10 +102,12 @@ observability_zone: "Observability" {
   }
 }
 
-trigger_slot.trigger -> app_zone: "1. Trigger"
-app_zone -> data_zone: "2. Enqueue"
-data_zone -> workers_zone: "3. Dequeue"
-workers_zone -> integrations_zone: "4. External APIs"
-workers_zone -> observability_zone: "5. Monitor" {
+trigger_slot.trigger -> app_zone.api: "1. Trigger"
+app_zone.api -> data_zone.queue: "2. Enqueue"
+data_zone.queue -> workers_zone: "3. Dequeue"
+workers_zone -> data_zone.db: "4. Persist"
+workers_zone -> data_zone.s3: "5. Artifacts"
+workers_zone -> integrations_zone: "6. External APIs"
+workers_zone -> observability_zone.sentry: "7. Monitor" {
   style.stroke-dash: 3
 }
