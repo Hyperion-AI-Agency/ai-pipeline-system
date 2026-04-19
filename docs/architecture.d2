@@ -28,8 +28,13 @@ classes: {
   }
 }
 
-# app_zone at position [0,1] = top-center.
-entry_zone: "Entry" {
+# Transparent wrapper so the cell absorbs grid stretch but the card stays card-sized.
+trigger_slot: "" {
+  style.fill: transparent
+  style.stroke: transparent
+  style.stroke-width: 0
+  style.shadow: false
+
   trigger: Webhook + Cron {
     class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
@@ -101,7 +106,7 @@ integrations_zone: "3rd Party Integrations" {
 }
 
 # L-to-R flow: trigger -> app -> data(queue) -> workers -> integrations
-entry_zone.trigger -> app_zone.api: "1. Trigger"
+trigger_slot.trigger -> app_zone.api: "1. Trigger"
 app_zone.api -> data_zone.queue: "2. Enqueue"
 data_zone.queue -> workers_zone: "3. Dequeue"
 workers_zone -> data_zone: "4. Persist results"
