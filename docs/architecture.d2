@@ -9,7 +9,7 @@ vars: {
 
 direction: right
 grid-columns: 3
-grid-gap: 120
+grid-gap: 240
 
 classes: {
   card: {
@@ -50,7 +50,7 @@ observability_zone: "Observability" {
 
 data_zone: "Data" {
   grid-columns: 3
-  grid-gap: 80
+  grid-gap: 160
 
   queue: Redis + DLQ {
     class: card
@@ -68,7 +68,7 @@ data_zone: "Data" {
 
 workers_zone: "Workers (19+ isolated)" {
   grid-columns: 3
-  grid-gap: 80
+  grid-gap: 160
 
   w1: LLM Worker {
     class: card
@@ -86,7 +86,7 @@ workers_zone: "Workers (19+ isolated)" {
 
 integrations_zone: "3rd Party Integrations" {
   grid-columns: 2
-  grid-gap: 80
+  grid-gap: 160
 
   claude: Claude API {
     class: card
