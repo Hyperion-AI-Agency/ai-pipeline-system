@@ -8,6 +8,8 @@ vars: {
 }
 
 direction: right
+grid-columns: 6
+grid-gap: 120
 
 classes: {
   card: {
@@ -26,10 +28,14 @@ classes: {
   }
 }
 
-# Entry point on the left - bare card, no zone wrapper.
-trigger: Webhook + Cron {
-  class: card
-  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+trigger_slot: "" {
+  style.fill: transparent
+  style.stroke: transparent
+
+  trigger: Webhook + Cron {
+    class: card
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+  }
 }
 
 app_zone: "App" {
@@ -39,16 +45,9 @@ app_zone: "App" {
   }
 }
 
-observability_zone: "Observability" {
-  sentry: Sentry {
-    class: card
-    icon: https://cdn.simpleicons.org/sentry
-  }
-}
-
 data_zone: "Data" {
   grid-columns: 3
-  grid-gap: 40
+  grid-gap: 30
 
   queue: Redis + DLQ {
     class: card
@@ -66,7 +65,7 @@ data_zone: "Data" {
 
 workers_zone: "Workers (19+ isolated)" {
   grid-columns: 3
-  grid-gap: 40
+  grid-gap: 30
 
   w1: LLM Worker {
     class: card
@@ -84,7 +83,7 @@ workers_zone: "Workers (19+ isolated)" {
 
 integrations_zone: "3rd Party Integrations" {
   grid-columns: 2
-  grid-gap: 40
+  grid-gap: 30
 
   claude: Claude API {
     class: card
@@ -96,14 +95,17 @@ integrations_zone: "3rd Party Integrations" {
   }
 }
 
-# L-to-R flow: trigger -> app -> data(queue) -> workers -> integrations
-trigger -> app_zone.api: "1. Trigger"
-app_zone.api -> data_zone.queue: "2. Enqueue"
-data_zone.queue -> workers_zone: "3. Dequeue"
-workers_zone -> data_zone: "4. Persist results"
-workers_zone -> integrations_zone: "5. External APIs" {
-  style.stroke-dash: 3
+observability_zone: "Observability" {
+  sentry: Sentry {
+    class: card
+    icon: https://cdn.simpleicons.org/sentry
+  }
 }
-workers_zone -> observability_zone.sentry: "6. Errors + perf" {
+
+trigger_slot.trigger -> app_zone: "1. Trigger"
+app_zone -> data_zone: "2. Enqueue"
+data_zone -> workers_zone: "3. Dequeue"
+workers_zone -> integrations_zone: "4. External APIs"
+workers_zone -> observability_zone: "5. Monitor" {
   style.stroke-dash: 3
 }
