@@ -9,7 +9,7 @@ vars: {
 
 direction: right
 grid-columns: 3
-grid-gap: 60
+grid-gap: 120
 
 classes: {
   card: {
@@ -28,7 +28,7 @@ classes: {
   }
 }
 
-# Order controls grid position. app_zone at position 1 = top-center.
+# app_zone at position [0,1] = top-center.
 trigger: Webhook + Cron {
   class: card
   icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
@@ -41,9 +41,34 @@ app_zone: "App" {
   }
 }
 
+observability_zone: "Observability" {
+  sentry: Sentry {
+    class: card
+    icon: https://cdn.simpleicons.org/sentry
+  }
+}
+
+data_zone: "Data" {
+  grid-columns: 3
+  grid-gap: 80
+
+  queue: Redis + DLQ {
+    class: card
+    icon: https://cdn.simpleicons.org/redis
+  }
+  db: Postgres {
+    class: card
+    icon: https://cdn.simpleicons.org/postgresql
+  }
+  s3: S3 Artifacts {
+    class: card
+    icon: https://icons.terrastruct.com/aws%2FStorage%2FAmazon-Simple-Storage-Service-S3.svg
+  }
+}
+
 workers_zone: "Workers (19+ isolated)" {
   grid-columns: 3
-  grid-gap: 30
+  grid-gap: 80
 
   w1: LLM Worker {
     class: card
@@ -59,34 +84,9 @@ workers_zone: "Workers (19+ isolated)" {
   }
 }
 
-data_zone: "Data" {
-  grid-columns: 3
-  grid-gap: 30
-
-  db: Postgres {
-    class: card
-    icon: https://cdn.simpleicons.org/postgresql
-  }
-  queue: Redis + DLQ {
-    class: card
-    icon: https://cdn.simpleicons.org/redis
-  }
-  s3: S3 Artifacts {
-    class: card
-    icon: https://icons.terrastruct.com/aws%2FStorage%2FAmazon-Simple-Storage-Service-S3.svg
-  }
-}
-
-observability_zone: "Observability" {
-  sentry: Sentry {
-    class: card
-    icon: https://cdn.simpleicons.org/sentry
-  }
-}
-
 integrations_zone: "3rd Party Integrations" {
   grid-columns: 2
-  grid-gap: 30
+  grid-gap: 80
 
   claude: Claude API {
     class: card
@@ -98,13 +98,14 @@ integrations_zone: "3rd Party Integrations" {
   }
 }
 
-trigger -> app_zone.api: "1. Trigger job"
+# L-to-R flow: trigger -> app -> data(queue) -> workers -> integrations
+trigger -> app_zone.api: "1. Trigger"
 app_zone.api -> data_zone.queue: "2. Enqueue"
-data_zone.queue -> workers_zone: "3. Dequeue per tool"
-workers_zone -> data_zone: "4. Persist + artifacts"
-workers_zone -> integrations_zone: "5. Call external APIs" {
+data_zone.queue -> workers_zone: "3. Dequeue"
+workers_zone -> data_zone: "4. Persist results"
+workers_zone -> integrations_zone: "5. External APIs" {
   style.stroke-dash: 3
 }
-workers_zone -> observability_zone: "6. Errors + perf" {
+workers_zone -> observability_zone.sentry: "6. Errors + perf" {
   style.stroke-dash: 3
 }
