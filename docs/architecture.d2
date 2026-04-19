@@ -30,14 +30,21 @@ classes: {
     style.fill: transparent
     style.stroke: transparent
   }
+  spacer: {
+    shape: rectangle
+    width: 160
+    height: 160
+    style.fill: transparent
+    style.stroke: transparent
+  }
 }
 
 # 3x3 layout:
-# Row 0: _      | data | observability
-# Row 1: trigger | app | workers
-# Row 2: _      | integrations | _
+# Row 0: _       | data | observability
+# Row 1: trigger | app  | workers
+# Row 2: _       | integrations | _
 
-spacer_tl: "" { class: hidden }
+spacer_tl: "" { class: spacer }
 
 data_zone: "Data" {
   grid-columns: 3
@@ -58,6 +65,9 @@ data_zone: "Data" {
 }
 
 observability_zone: "Observability" {
+  grid-columns: 1
+  grid-gap: 80
+
   sentry: Sentry {
     class: card
     icon: https://cdn.simpleicons.org/sentry
@@ -65,6 +75,9 @@ observability_zone: "Observability" {
 }
 
 trigger_slot: "" { class: hidden
+  grid-columns: 2
+  grid-gap: 80
+
   webhook: Webhook {
     class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
@@ -76,6 +89,9 @@ trigger_slot: "" { class: hidden
 }
 
 app_zone: "App" {
+  grid-columns: 1
+  grid-gap: 80
+
   api: FastAPI Backend {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
@@ -100,7 +116,7 @@ workers_zone: "Workers (19+ isolated)" {
   }
 }
 
-spacer_bl: "" { class: hidden }
+spacer_bl: "" { class: spacer }
 
 integrations_zone: "3rd Party Integrations" {
   grid-columns: 2
@@ -116,7 +132,7 @@ integrations_zone: "3rd Party Integrations" {
   }
 }
 
-spacer_br: "" { class: hidden }
+spacer_br: "" { class: spacer }
 
 trigger_slot.webhook -> app_zone.api: "1a. Webhook"
 trigger_slot.cron -> app_zone.api: "1b. Cron"
