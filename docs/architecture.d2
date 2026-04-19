@@ -1,5 +1,5 @@
 # AI Pipeline System - Architecture
-# Render: d2 --theme 0 --sketch --pad 120 --scale 1.5 --layout elk docs/architecture.d2 docs/architecture.svg
+# Render: d2 --theme 0 --sketch --pad 80 --scale 1.0 --layout elk docs/architecture.d2 docs/architecture.svg
 
 vars: {
   d2-config: {
@@ -8,6 +8,8 @@ vars: {
 }
 
 direction: right
+grid-columns: 3
+grid-gap: 60
 
 classes: {
   card: {
@@ -33,6 +35,9 @@ trigger: Webhook + Cron {
 }
 
 gateway_zone: "Gateway" {
+  grid-columns: 2
+  grid-gap: 40
+
   api: FastAPI Gateway {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
@@ -44,7 +49,8 @@ gateway_zone: "Gateway" {
 }
 
 workers_zone: "Workers (19+ tools)" {
-  direction: down
+  grid-columns: 2
+  grid-gap: 40
 
   w1: Claude Worker {
     class: card
@@ -61,7 +67,8 @@ workers_zone: "Workers (19+ tools)" {
 }
 
 data_zone: "Data" {
-  direction: down
+  grid-columns: 2
+  grid-gap: 40
 
   db: Postgres {
     class: card
@@ -80,7 +87,6 @@ external_zone: "Observability" {
   }
 }
 
-# Single fan-out from queue to workers, single fan-in from workers to data zone.
 trigger -> gateway_zone.api: "1. Trigger job"
 gateway_zone.api -> gateway_zone.queue: "2. Enqueue"
 gateway_zone.queue -> workers_zone.w1: "3a. Dequeue"
