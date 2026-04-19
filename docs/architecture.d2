@@ -32,30 +32,12 @@ classes: {
   }
 }
 
-# 3x3 hub-and-spoke layout. app_zone at dead center [1,1].
-# Row 0: _    | trigger | observability
-# Row 1: data | app     | integrations
-# Row 2: _    | workers | _
+# 3x3 layout:
+# Row 0: _      | data | observability
+# Row 1: trigger | app | workers
+# Row 2: _      | integrations | _
 
 spacer_tl: "" { class: hidden }
-
-trigger_slot: "" { class: hidden
-  webhook: Webhook {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
-  }
-  cron: Cron {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/clock.svg
-  }
-}
-
-observability_zone: "Observability" {
-  sentry: Sentry {
-    class: card
-    icon: https://cdn.simpleicons.org/sentry
-  }
-}
 
 data_zone: "Data" {
   grid-columns: 3
@@ -75,28 +57,30 @@ data_zone: "Data" {
   }
 }
 
+observability_zone: "Observability" {
+  sentry: Sentry {
+    class: card
+    icon: https://cdn.simpleicons.org/sentry
+  }
+}
+
+trigger_slot: "" { class: hidden
+  webhook: Webhook {
+    class: card
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
+  }
+  cron: Cron {
+    class: card
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/clock.svg
+  }
+}
+
 app_zone: "App" {
   api: FastAPI Backend {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
   }
 }
-
-integrations_zone: "3rd Party Integrations" {
-  grid-columns: 2
-  grid-gap: 80
-
-  claude: Claude API {
-    class: card
-    icon: https://cdn.simpleicons.org/anthropic
-  }
-  youtube: YouTube API {
-    class: card
-    icon: https://cdn.simpleicons.org/youtube
-  }
-}
-
-spacer_bl: "" { class: hidden }
 
 workers_zone: "Workers (19+ isolated)" {
   grid-columns: 1
@@ -113,6 +97,22 @@ workers_zone: "Workers (19+ isolated)" {
   more: 17+ more workers {
     class: card
     icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/layers.svg
+  }
+}
+
+spacer_bl: "" { class: hidden }
+
+integrations_zone: "3rd Party Integrations" {
+  grid-columns: 2
+  grid-gap: 80
+
+  claude: Claude API {
+    class: card
+    icon: https://cdn.simpleicons.org/anthropic
+  }
+  youtube: YouTube API {
+    class: card
+    icon: https://cdn.simpleicons.org/youtube
   }
 }
 
