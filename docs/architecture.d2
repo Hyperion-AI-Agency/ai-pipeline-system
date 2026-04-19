@@ -40,9 +40,13 @@ classes: {
 spacer_tl: "" { class: hidden }
 
 trigger_slot: "" { class: hidden
-  trigger: Webhook + Cron {
+  webhook: Webhook {
     class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/webhook.svg
+  }
+  cron: Cron {
+    class: card
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/clock.svg
   }
 }
 
@@ -57,7 +61,7 @@ data_zone: "Data" {
   grid-columns: 3
   grid-gap: 80
 
-  queue: Redis + DLQ {
+  queue: Redis Queue {
     class: card
     icon: https://cdn.simpleicons.org/redis
   }
@@ -72,7 +76,7 @@ data_zone: "Data" {
 }
 
 app_zone: "App" {
-  api: FastAPI {
+  api: FastAPI Backend {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
   }
@@ -114,7 +118,8 @@ workers_zone: "Workers (19+ isolated)" {
 
 spacer_br: "" { class: hidden }
 
-trigger_slot.trigger -> app_zone.api: "1. Trigger"
+trigger_slot.webhook -> app_zone.api: "1a. Webhook"
+trigger_slot.cron -> app_zone.api: "1b. Cron"
 app_zone.api -> data_zone.queue: "2. Enqueue"
 data_zone.queue -> workers_zone: "3. Dequeue"
 workers_zone -> data_zone.db: "4. Persist"
