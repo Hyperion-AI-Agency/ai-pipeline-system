@@ -26,24 +26,23 @@ classes: {
     style.font-size: 13
     style.bold: true
   }
-}
-
-# Row 0: trigger | app | observability
-# Row 1: data | workers | integrations
-trigger_slot: "" {
-  style.fill: transparent
-  style.stroke: transparent
-
-  trigger: Webhook + Cron {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+  hidden: {
+    style.fill: transparent
+    style.stroke: transparent
   }
 }
 
-app_zone: "App" {
-  api: FastAPI {
+# 3x3 hub-and-spoke layout. app_zone at dead center [1,1].
+# Row 0: _    | trigger | observability
+# Row 1: data | app     | integrations
+# Row 2: _    | workers | _
+
+spacer_tl: "" { class: hidden }
+
+trigger_slot: "" { class: hidden
+  trigger: Webhook + Cron {
     class: card
-    icon: https://cdn.simpleicons.org/fastapi
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
   }
 }
 
@@ -72,6 +71,29 @@ data_zone: "Data" {
   }
 }
 
+app_zone: "App" {
+  api: FastAPI {
+    class: card
+    icon: https://cdn.simpleicons.org/fastapi
+  }
+}
+
+integrations_zone: "3rd Party Integrations" {
+  grid-columns: 2
+  grid-gap: 30
+
+  claude: Claude API {
+    class: card
+    icon: https://cdn.simpleicons.org/anthropic
+  }
+  youtube: YouTube API {
+    class: card
+    icon: https://cdn.simpleicons.org/youtube
+  }
+}
+
+spacer_bl: "" { class: hidden }
+
 workers_zone: "Workers (19+ isolated)" {
   grid-columns: 3
   grid-gap: 30
@@ -90,19 +112,7 @@ workers_zone: "Workers (19+ isolated)" {
   }
 }
 
-integrations_zone: "3rd Party Integrations" {
-  grid-columns: 2
-  grid-gap: 30
-
-  claude: Claude API {
-    class: card
-    icon: https://cdn.simpleicons.org/anthropic
-  }
-  youtube: YouTube API {
-    class: card
-    icon: https://cdn.simpleicons.org/youtube
-  }
-}
+spacer_br: "" { class: hidden }
 
 trigger_slot.trigger -> app_zone.api: "1. Trigger"
 app_zone.api -> data_zone.queue: "2. Enqueue"
