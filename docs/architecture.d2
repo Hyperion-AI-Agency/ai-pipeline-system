@@ -28,6 +28,8 @@ classes: {
   }
 }
 
+# Row 0: trigger | app | observability
+# Row 1: data | workers | integrations
 trigger_slot: "" {
   style.fill: transparent
   style.stroke: transparent
@@ -42,6 +44,13 @@ app_zone: "App" {
   api: FastAPI {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
+  }
+}
+
+observability_zone: "Observability" {
+  sentry: Sentry {
+    class: card
+    icon: https://cdn.simpleicons.org/sentry
   }
 }
 
@@ -92,13 +101,6 @@ integrations_zone: "3rd Party Integrations" {
   youtube: YouTube API {
     class: card
     icon: https://cdn.simpleicons.org/youtube
-  }
-}
-
-observability_zone: "Observability" {
-  sentry: Sentry {
-    class: card
-    icon: https://cdn.simpleicons.org/sentry
   }
 }
 
