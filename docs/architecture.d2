@@ -1,4 +1,4 @@
-# AI Pipeline System - Architecture
+# AI Pipeline System - Architecture (v5: linear L-to-R flow, stacked core)
 # Render: d2 --theme 0 --sketch --pad 80 --scale 1.0 --layout elk docs/architecture.d2 docs/architecture.svg
 
 vars: {
@@ -8,8 +8,6 @@ vars: {
 }
 
 direction: right
-grid-columns: 3
-grid-gap: 240
 
 classes: {
   card: {
@@ -30,51 +28,11 @@ classes: {
     style.fill: transparent
     style.stroke: transparent
   }
-  spacer: {
-    shape: rectangle
-    width: 160
-    height: 160
-    style.fill: transparent
-    style.stroke: transparent
-  }
 }
 
-# 3x3 layout:
-# Row 0: _       | data | observability
-# Row 1: trigger | app  | workers
-# Row 2: _       | integrations | _
+# Layout: [entry] -> [core: Data / App / Integrations stacked] -> [processing] -> [observability]
 
-spacer_tl: "" { class: spacer }
-
-data_zone: "Data" {
-  grid-columns: 3
-  grid-gap: 80
-
-  queue: Redis Queue {
-    class: card
-    icon: https://cdn.simpleicons.org/redis
-  }
-  db: Postgres {
-    class: card
-    icon: https://cdn.simpleicons.org/postgresql
-  }
-  s3: S3 Artifacts {
-    class: card
-    icon: https://icons.terrastruct.com/aws%2FStorage%2FAmazon-Simple-Storage-Service-S3.svg
-  }
-}
-
-observability_zone: "Observability" {
-  grid-columns: 1
-  grid-gap: 80
-
-  sentry: Sentry {
-    class: card
-    icon: https://cdn.simpleicons.org/sentry
-  }
-}
-
-trigger_slot: "" { class: hidden
+entry_slot: "" { class: hidden
   grid-columns: 2
   grid-gap: 80
 
@@ -88,17 +46,53 @@ trigger_slot: "" { class: hidden
   }
 }
 
-app_zone: "App" {
-  grid-columns: 1
-  grid-gap: 80
+core: "" { class: hidden
+  direction: down
 
-  api: FastAPI Backend {
-    class: card
-    icon: https://cdn.simpleicons.org/fastapi
+  data_zone: "Data" {
+    grid-columns: 3
+    grid-gap: 80
+
+    queue: Redis Queue {
+      class: card
+      icon: https://cdn.simpleicons.org/redis
+    }
+    db: Postgres {
+      class: card
+      icon: https://cdn.simpleicons.org/postgresql
+    }
+    s3: S3 Artifacts {
+      class: card
+      icon: https://icons.terrastruct.com/aws%2FStorage%2FAmazon-Simple-Storage-Service-S3.svg
+    }
+  }
+
+  app_zone: "App" {
+    grid-columns: 1
+    grid-gap: 80
+
+    api: FastAPI Backend {
+      class: card
+      icon: https://cdn.simpleicons.org/fastapi
+    }
+  }
+
+  integrations_zone: "3rd Party Integrations" {
+    grid-columns: 2
+    grid-gap: 80
+
+    claude: Claude API {
+      class: card
+      icon: https://cdn.simpleicons.org/anthropic
+    }
+    youtube: YouTube API {
+      class: card
+      icon: https://cdn.simpleicons.org/youtube
+    }
   }
 }
 
-workers_zone: "Workers (19+ isolated)" {
+processing_zone: "Workers (19+ isolated)" {
   grid-columns: 1
   grid-gap: 80
 
@@ -116,31 +110,22 @@ workers_zone: "Workers (19+ isolated)" {
   }
 }
 
-spacer_bl: "" { class: spacer }
-
-integrations_zone: "3rd Party Integrations" {
-  grid-columns: 2
+observability_zone: "Observability" {
+  grid-columns: 1
   grid-gap: 80
 
-  claude: Claude API {
+  sentry: Sentry {
     class: card
-    icon: https://cdn.simpleicons.org/anthropic
-  }
-  youtube: YouTube API {
-    class: card
-    icon: https://cdn.simpleicons.org/youtube
+    icon: https://cdn.simpleicons.org/sentry
   }
 }
 
-spacer_br: "" { class: spacer }
-
-trigger_slot.webhook -> app_zone.api: "1a. Webhook"
-trigger_slot.cron -> app_zone.api: "1b. Cron"
-app_zone.api -> data_zone.queue: "2. Enqueue"
-data_zone.queue -> workers_zone: "3. Dequeue"
-workers_zone -> data_zone.db: "4. Persist"
-workers_zone -> data_zone.s3: "5. Artifacts"
-workers_zone -> integrations_zone: "6. External APIs"
-workers_zone -> observability_zone.sentry: "7. Monitor" {
+# Zone-to-zone arrows only. Max 6. Linear flow.
+entry_slot -> core.app_zone: "1. Trigger"
+core.app_zone -> core.data_zone: "2. Enqueue"
+core.data_zone -> processing_zone: "3. Dequeue"
+processing_zone -> core.data_zone: "4. Persist + artifacts"
+processing_zone -> core.integrations_zone: "5. External APIs"
+processing_zone -> observability_zone: "Monitor" {
   style.stroke-dash: 3
 }
