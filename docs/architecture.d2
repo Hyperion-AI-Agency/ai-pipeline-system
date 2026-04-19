@@ -29,9 +29,11 @@ classes: {
 }
 
 # app_zone at position [0,1] = top-center.
-trigger: Webhook + Cron {
-  class: card
-  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+entry_zone: "Entry" {
+  trigger: Webhook + Cron {
+    class: card
+    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+  }
 }
 
 app_zone: "App" {
@@ -99,7 +101,7 @@ integrations_zone: "3rd Party Integrations" {
 }
 
 # L-to-R flow: trigger -> app -> data(queue) -> workers -> integrations
-trigger -> app_zone.api: "1. Trigger"
+entry_zone.trigger -> app_zone.api: "1. Trigger"
 app_zone.api -> data_zone.queue: "2. Enqueue"
 data_zone.queue -> workers_zone: "3. Dequeue"
 workers_zone -> data_zone: "4. Persist results"
