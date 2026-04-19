@@ -34,7 +34,7 @@ trigger: Webhook + Cron {
   icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
 }
 
-gateway_zone: "Gateway" {
+app_zone: "App" {
   grid-columns: 2
   grid-gap: 30
 
@@ -87,10 +87,9 @@ observability_zone: "Observability" {
   }
 }
 
-# Zone-level arrows keep the graph clean (no per-worker fan-out lines crossing cards)
-trigger -> gateway_zone.api: "1. Trigger job"
-gateway_zone.api -> gateway_zone.queue: "2. Enqueue"
-gateway_zone.queue -> workers_zone: "3. Dequeue per tool"
+trigger -> app_zone.api: "1. Trigger job"
+app_zone.api -> app_zone.queue: "2. Enqueue"
+app_zone.queue -> workers_zone: "3. Dequeue per tool"
 workers_zone -> data_zone: "4. Persist + artifacts"
 workers_zone -> observability_zone: "5. Errors + perf" {
   style.stroke-dash: 3
