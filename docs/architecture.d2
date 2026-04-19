@@ -120,12 +120,12 @@ observability_zone: "Observability" {
   }
 }
 
-# Zone-to-zone arrows only. Max 6. Linear flow.
+# App is the hub. All arrows radiate through it.
 entry_slot -> core.app_zone: "1. Trigger"
 core.app_zone -> core.data_zone: "2. Enqueue"
-core.data_zone -> processing_zone: "3. Dequeue"
-processing_zone -> core.data_zone: "4. Persist + artifacts"
-processing_zone -> core.integrations_zone: "5. External APIs"
+core.app_zone -> processing_zone: "3. Dispatch"
+processing_zone -> core.app_zone: "4. Results"
+core.app_zone -> core.integrations_zone: "5. External APIs"
 processing_zone -> observability_zone: "Monitor" {
   style.stroke-dash: 3
 }
