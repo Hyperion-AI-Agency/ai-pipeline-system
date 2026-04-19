@@ -1,5 +1,5 @@
 # AI Pipeline System - Architecture
-# Render: d2 --theme 0 --pad 120 --scale 1.5 --layout elk docs/architecture.d2 docs/architecture.svg
+# Render: d2 --theme 0 --sketch --pad 120 --scale 1.5 --layout elk docs/architecture.d2 docs/architecture.svg
 
 vars: {
   d2-config: {
@@ -8,8 +8,6 @@ vars: {
 }
 
 direction: right
-grid-columns: 2
-grid-gap: 60
 
 classes: {
   card: {
@@ -28,28 +26,26 @@ classes: {
   }
 }
 
-trigger_zone: "Trigger" {
-  class: zone
-  style.fill: "#f0f9ff"
+# Entry point - outside the system
+trigger: Webhook + Cron {
+  class: card
+  icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
+}
 
-  trigger: Webhook + Cron {
-    class: card
-    icon: https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/zap.svg
-  }
+gateway_zone: "Gateway" {
   api: FastAPI Gateway {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
   }
-}
-
-backend_zone: "Workers (19+ tools)" {
-  class: zone
-  style.fill: "#eef2ff"
-
   queue: Redis Queue + DLQ {
     class: card
     icon: https://cdn.simpleicons.org/redis
   }
+}
+
+workers_zone: "Workers (19+ tools)" {
+  direction: down
+
   w1: Claude Worker {
     class: card
     icon: https://cdn.simpleicons.org/anthropic
@@ -65,8 +61,7 @@ backend_zone: "Workers (19+ tools)" {
 }
 
 data_zone: "Data" {
-  class: zone
-  style.fill: "#ecfdf5"
+  direction: down
 
   db: Postgres {
     class: card
@@ -79,23 +74,20 @@ data_zone: "Data" {
 }
 
 external_zone: "Observability" {
-  class: zone
-  style.fill: "#fef3c7"
-
   sentry: Sentry {
     class: card
     icon: https://cdn.simpleicons.org/sentry
   }
 }
 
-trigger_zone.trigger -> trigger_zone.api: "1. Trigger job"
-trigger_zone.api -> backend_zone.queue: "2. Enqueue"
-backend_zone.queue -> backend_zone.w1: "3a. Dequeue"
-backend_zone.queue -> backend_zone.w2: "3b. Dequeue"
-backend_zone.queue -> backend_zone.more: "3c. Dequeue"
-backend_zone.w1 -> data_zone.db: "4a. Persist result"
-backend_zone.w2 -> data_zone.db: "4b. Persist result"
-backend_zone.more -> data_zone.s3: "4c. Store artifact"
-backend_zone -> external_zone.sentry: "5. Errors + perf" {
+# Single fan-out from queue to workers, single fan-in from workers to data zone.
+trigger -> gateway_zone.api: "1. Trigger job"
+gateway_zone.api -> gateway_zone.queue: "2. Enqueue"
+gateway_zone.queue -> workers_zone.w1: "3a. Dequeue"
+gateway_zone.queue -> workers_zone.w2: "3b. Dequeue"
+gateway_zone.queue -> workers_zone.more: "3c. Dequeue"
+workers_zone -> data_zone.db: "4. Persist results"
+workers_zone -> data_zone.s3: "5. Store artifacts"
+workers_zone -> external_zone.sentry: "6. Errors + perf" {
   style.stroke-dash: 3
 }
