@@ -36,21 +36,21 @@ trigger: Webhook + Cron {
 
 gateway_zone: "Gateway" {
   grid-columns: 2
-  grid-gap: 40
+  grid-gap: 30
 
-  api: FastAPI Gateway {
+  api: FastAPI {
     class: card
     icon: https://cdn.simpleicons.org/fastapi
   }
-  queue: Redis Queue + DLQ {
+  queue: Redis + DLQ {
     class: card
     icon: https://cdn.simpleicons.org/redis
   }
 }
 
-workers_zone: "Workers (19+ tools)" {
-  grid-columns: 2
-  grid-gap: 40
+workers_zone: "Workers (19+ isolated)" {
+  grid-columns: 3
+  grid-gap: 30
 
   w1: Claude Worker {
     class: card
@@ -68,7 +68,7 @@ workers_zone: "Workers (19+ tools)" {
 
 data_zone: "Data" {
   grid-columns: 2
-  grid-gap: 40
+  grid-gap: 30
 
   db: Postgres {
     class: card
@@ -80,20 +80,18 @@ data_zone: "Data" {
   }
 }
 
-external_zone: "Observability" {
+observability_zone: "Observability" {
   sentry: Sentry {
     class: card
     icon: https://cdn.simpleicons.org/sentry
   }
 }
 
+# Zone-level arrows keep the graph clean (no per-worker fan-out lines crossing cards)
 trigger -> gateway_zone.api: "1. Trigger job"
 gateway_zone.api -> gateway_zone.queue: "2. Enqueue"
-gateway_zone.queue -> workers_zone.w1: "3a. Dequeue"
-gateway_zone.queue -> workers_zone.w2: "3b. Dequeue"
-gateway_zone.queue -> workers_zone.more: "3c. Dequeue"
-workers_zone -> data_zone.db: "4. Persist results"
-workers_zone -> data_zone.s3: "5. Store artifacts"
-workers_zone -> external_zone.sentry: "6. Errors + perf" {
+gateway_zone.queue -> workers_zone: "3. Dequeue per tool"
+workers_zone -> data_zone: "4. Persist + artifacts"
+workers_zone -> observability_zone: "5. Errors + perf" {
   style.stroke-dash: 3
 }
