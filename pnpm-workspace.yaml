@@ -23,7 +23,7 @@ catalogs:
     "resend": ^4.5.1
     "@react-email/components": 0.0.41
     "posthog-js": ^1.246.0
-    "posthog-node": ^4.17.2
+    "posthog-node": ^5.29.2
     "framer-motion": ^12.23.12
     motion: ^12.23.12
     "rough-notation": ^0.5.1
